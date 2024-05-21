@@ -2,6 +2,8 @@
 
 This repository contains code to generate visual anagrams and other multi-view optical illusions. These are images that change appearance or identity when transformed, such as by a rotation, a colour inversion, or a jigsaw rearrangement. Based on the paper "Generating Multi-View Optical Illusions with Diffusion Models" by [Daniel Geng](https://dangeng.github.io/), [Aaron Park](https://inbumpark.github.io/), and [Andrew Owens](https://andrewowens.com/) available at [[Arxiv](https://arxiv.org/abs/2311.17919)].
 
+For a video introduction and demonstation, please see https://www.youtube.com/watch?v=KxiQRMe2BN4
+
 ## Installation
 
 ### Environment
