@@ -1,52 +1,22 @@
-# Visual Anagrams | Factorized Diffusion
-
-<font color="red"><b>NOTE:</b></font> This repo contains code for both [Visual Anagrams](https://dangeng.github.io/visual_anagrams/) and [Factorized Diffusion](https://dangeng.github.io/factorized_diffusion/). The below is the readme for Visual Anagrams. Please see [this readme](https://github.com/dangeng/visual_anagrams/blob/main/readme_factorized_diffusion.md) for info about factorized diffusion.
-
 # Visual Anagrams: Generating Multi-View Optical Illusions with Diffusion Models
 
-CVPR 2024
-
-[Daniel Geng](https://dangeng.github.io/), [Aaron Park](https://inbumpark.github.io/), [Andrew Owens](https://andrewowens.com/)
-
-## [[Arxiv](https://arxiv.org/abs/2311.17919)] [[Website](https://dangeng.github.io/visual_anagrams/)] [[Colab (Free Tier)](https://colab.research.google.com/github/dangeng/visual_anagrams/blob/main/notebooks/colab_demo_free_tier.ipynb)] [[Colab (Pro Tier)](https://colab.research.google.com/github/dangeng/visual_anagrams/blob/main/notebooks/colab_demo_pro_tier.ipynb)]
-
-[![Open In Colab (Free Tier)](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dangeng/visual_anagrams/blob/main/notebooks/colab_demo_free_tier.ipynb) <sub>(Free Tier)</sub>
-
-[![Open In Colab (Pro Tier)](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dangeng/visual_anagrams/blob/main/notebooks/colab_demo_pro_tier.ipynb) <sub>(Colab Pro)</sub>
-
-![teaser](./assets/teaser.small.gif)
-
-This repo contains code to generate visual anagrams and other multi-view optical illusions. These are images that change appearance or identity when transformed, such as by a rotation, a color inversion, or a jigsaw rearrangement. Please read our paper or visit our website for more details.
-
-## Colab Demos
-
-We provide two colab demos. One was graciously written by [Tamizh N](https://github.com/tmzh), and is memory efficient enough to be run with Colab Free Tier resources (at the cost of just slightly more inconvenience):
-
-[![Open In Colab (Free Tier)](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dangeng/visual_anagrams/blob/main/notebooks/colab_demo_free_tier.ipynb) <sub>(Free Tier)</sub>
-
-For people with, or willing to obtain, a Colab Pro subscription we also have the following notebook, which requires a High RAM and V100 runtime, but is slightly more convenient to use:
-
-[![Open In Colab (Pro Tier)](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/dangeng/visual_anagrams/blob/main/notebooks/colab_demo_pro_tier.ipynb) <sub>(Colab Pro)</sub>
+This repository contains code to generate visual anagrams and other multi-view optical illusions. These are images that change appearance or identity when transformed, such as by a rotation, a colour inversion, or a jigsaw rearrangement. Based on the paper "Generating Multi-View Optical Illusions with Diffusion Models" by [Daniel Geng](https://dangeng.github.io/), [Aaron Park](https://inbumpark.github.io/), and [Andrew Owens](https://andrewowens.com/) available at [[Arxiv](https://arxiv.org/abs/2311.17919)].
 
 ## Installation
 
-### Conda Environment
-
-Create a conda env by running (only on Linux):
-
+### Environment
+The code is written in Python. Preqrequisite libraries are specified in the environment.yml file, which can be installed in a Conda environment, or added to an existing Python installation.
 ```
 conda env create -f environment.yml
 ```
-
-and then activate it by running 
-
+which can be activated by running 
 ```
 conda activate visual_anagrams
 ```
 
 ### DeepFloyd
 
-Our method uses [DeepFloyd IF](https://huggingface.co/docs/diffusers/api/pipelines/deepfloyd_if), a pixel-based diffusion model. We do not use Stable Diffusion because latent diffusion models cause artifacts in illusions (see our paper for more details).
+Our method uses [DeepFloyd IF](https://huggingface.co/docs/diffusers/api/pipelines/deepfloyd_if), a pixel-based diffusion model. We do not use Stable Diffusion or Midjourney, which are latent diffusion models that would cause artifacts in illusions (see our paper for more details).
 
 Before using DeepFloyd IF, you must accept its usage conditions. To do so:
 
@@ -63,24 +33,22 @@ and entering your [Hugging Face Hub access token](https://huggingface.co/docs/hu
 
 
 ## Usage
-
-
-To generate 90 degree rotation illusions we can use the below command. This will create 10 samples, at 3 different sizes: 64×64, 256×256, and 1024×1024. See below for commands to generate more types of multi-view illusions.
-
+Images are generated from the command line using the generate.py script
 ```
 python generate.py --name rotate_cw.village.horse --prompts "a snowy mountain village" "a horse" --style "an oil painting of" --views identity rotate_cw --num_samples 10 --num_inference_steps 30 --guidance_scale 10.0 --generate_1024
 ```
 
 Here is a description of useful arguments:
 
-- `--name`: Name for the illusion. Will save samples to `./results/{name}`.
-- `--prompts`: A list of prompts for illusions
-- `--style`: Optional style prompt to prepend to each of the prompts. For example, could be `"an oil painting of"`. Saves some writing.
-- `--views`: A list of views to use. Must match the number of prompts. For a list of views see the `get_views` function in `visual_anagrams/views/__init__.py`.
-- `--num_samples`: Number of illusions to sample
-- `--num_inference_steps`: Number of diffusion denoising steps to take.
-- `--guidance_scale`: Guidance scale for classifier free guidance.
+- `--name`: (required) Name for the illusion . Will save samples to `./results/{name}`.
+- `--prompts`: (required) A list of prompts for illusions
+- `--views`: (required) A list of views to create. Must match the number of prompts. For a list of views see the `get_views` function in `visual_anagrams/views/__init__.py`.
+- `--style`: Optional style prompt to prepend to each of the prompts. For example, could be `"an oil painting of"`.
+- `--num_samples`: Number of illusions to sample. Deafults to 100.
+- `--num_inference_steps`: Number of diffusion denoising steps to take. Defaults to 100.
+- `--guidance_scale`: Guidance scale for classifier free guidance. Defaults to 7.0.
 - `--generate_1024`: Use DeepFloyd Stage III (which is just Stable Diffusion 4x Upscaler) to upsample to 1024x1024 image.
+- `--seed`: Seed used to generate initial noise
 
 ### Upscaling
 
